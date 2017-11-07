@@ -16,7 +16,7 @@ SoftwareSerial swSer(14, 12, false, 256);
 int LED = D4;
 
 //Setando valores para um bom condutor;
-int sensorAlcool = 0;
+int sensorAlcool = 400;
 int velocidade = 0;
 bool flag_alc = false;
 bool flag_vel = false;
@@ -72,14 +72,14 @@ void send_payload(byte opcode, int flagSelect)
     //broadcast data via wifi
     
     package = String((char*) data_received);
-    Serial.write(data_received, 12);
+    Serial.println(package);
     mesh.sendBroadcast(package);
     
   }
 }
 
 void setup() {
- Serial.begin(9600);
+ Serial.begin(115200);
  swSer.begin(9600); /* Define baud rate for serial communication */
  
 //mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
@@ -94,32 +94,34 @@ void setup() {
 void loop() {
   mesh.update();
   delay(1000);
-  
+
+  Serial.println("teste");
   if (Serial.available())
   {
     String data = Serial.readString();
     String op = data.substring(0,4);
     int value = data.substring(5).toInt();
+    Serial.println("data: " + data);
     if (op.equals("VEL-"))
     {
       velocidade = value;
     }
     if (op.equals("ALC-"))
     {
-      sensorAlcool = value
+      sensorAlcool = value;
     }
     
   }
 //Le sensor de alcool;
 //Le sensor de velocidade
-  if(sensorAlcool > ALCOOLMAX || flag_alc)
+  /*if(sensorAlcool > ALCOOLMAX || flag_alc)
     //individuo bebado, monta payload
     send_payload(OPCODE_BEBADO,0);
   
   else if (velocidade > VELMAX || flag_vel)
     //individuo em alta velocidade, monta payload
     send_payload(OPCODE_VEL, 1);
-
+*/
 
   
 }
