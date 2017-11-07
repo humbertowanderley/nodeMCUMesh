@@ -6,7 +6,7 @@
 #define   MESH_PORT       5555
 
 #define VELMAX 115
-#define ALCOOLMAX 220 
+#define ALCOOLMAX 350 
 #define OPCODE_BEBADO 0x40
 #define OPCODE_VEL 0x20
 
@@ -72,6 +72,7 @@ void send_payload(byte opcode, int flagSelect)
     //broadcast data via wifi
     
     package = String((char*) data_received);
+    Serial.write(data_received, 12);
     mesh.sendBroadcast(package);
     
   }
@@ -94,6 +95,21 @@ void loop() {
   mesh.update();
   delay(1000);
   
+  if (Serial.available())
+  {
+    String data = Serial.readString();
+    String op = data.substring(0,4);
+    int value = data.substring(5).toInt();
+    if (op.equals("VEL-"))
+    {
+      velocidade = value;
+    }
+    if (op.equals("ALC-"))
+    {
+      sensorAlcool = value
+    }
+    
+  }
 //Le sensor de alcool;
 //Le sensor de velocidade
   if(sensorAlcool > ALCOOLMAX || flag_alc)
