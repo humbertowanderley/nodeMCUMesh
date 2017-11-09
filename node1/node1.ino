@@ -6,7 +6,7 @@
 #define   MESH_PORT       5555
 
 #define VELMAX 115
-#define ALCOOLMAX 60
+#define ALCOOLMAX 70
 #define OPCODE_BEBADO 0x40
 #define OPCODE_VEL 0x20
 
@@ -21,7 +21,7 @@ int velocidade = 0;
 int buttonState=0;
 bool flag_alc = false;
 bool flag_vel = false;
-
+unsigned int startTime=0x7FFFFFFF;
 void receivedCallback( uint32_t from, String &msg ) {
 
   // verifica se recebeu payload via wifi.
@@ -73,7 +73,10 @@ void send_payload(byte opcode, int flagSelect)
     //broadcast data via wifi
 
     package = String((char*) data_received);
-    Serial.println(package);
+    if (millis()-startTime >= 600000) {
+      Serial.println(package);
+      startTime = millis();
+    }
     mesh.sendBroadcast(package);
 
   }
@@ -90,7 +93,7 @@ void setup() {
   pinMode(4,INPUT);
 
   //mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
-  mesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
+//  mesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
 
   mesh.init( MESH_PREFIX, MESH_PASSWORD, MESH_PORT );
   mesh.setReceiveCallback( &receivedCallback );
@@ -129,10 +132,12 @@ void loop() {
    
   //Le sensor de alcool;
   sensorAlcool = analogRead(A0);
+//  Serial.println(sensorAlcool);
   //Le sensor de velocidade
   buttonState = digitalRead(4);
   
   if (buttonState == HIGH) {
+//    Serial.println("pressed");
     velocidade = 200;
   } else {
     velocidade = 0;
