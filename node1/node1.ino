@@ -18,6 +18,7 @@ int LED = D4;
 //Setando valores para um bom condutor;
 int sensorAlcool = 400;
 int velocidade = 0;
+int buttonState=0;
 bool flag_alc = false;
 bool flag_vel = false;
 
@@ -85,6 +86,9 @@ void setup() {
   // pin to read mq3
   pinMode(A0, INPUT);
 
+  // pin to read push button
+  pinMode(4,INPUT);
+
   //mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
   mesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
 
@@ -125,8 +129,14 @@ void loop() {
    
   //Le sensor de alcool;
   sensorAlcool = analogRead(A0);
-  
   //Le sensor de velocidade
+  buttonState = digitalRead(4);
+  
+  if (buttonState == HIGH) {
+    velocidade = 200;
+  } else {
+    velocidade = 0;
+  }
   
   if (sensorAlcool > ALCOOLMAX || flag_alc)
     //individuo bebado, monta payload
