@@ -6,7 +6,7 @@
 #define   MESH_PORT       5555
 
 #define VELMAX 115
-#define ALCOOLMAX 350
+#define ALCOOLMAX 60
 #define OPCODE_BEBADO 0x40
 #define OPCODE_VEL 0x20
 
