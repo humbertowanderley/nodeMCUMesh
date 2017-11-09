@@ -90,38 +90,44 @@ void setup() {
   mesh.setNewConnectionCallback( &newConnectionCallback );
 }
 
-
+String s = "0123456789123";
 void loop() {
   mesh.update();
   delay(1000);
 
-  Serial.println("teste");
+  Serial.println(s);
   if (Serial.available())
   {
     String data = Serial.readString();
     String op = data.substring(0,4);
-    int value = data.substring(5).toInt();
-    Serial.println("data: " + data);
+    String strValue = data.substring(4);
+    int value = strValue.toInt();
+//    Serial.println(op);
+//    Serial.println("data: " +/ data);
     if (op.equals("VEL-"))
     {
       velocidade = value;
+      s="velocidade";
     }
     if (op.equals("ALC-"))
     {
       sensorAlcool = value;
+      s="";
+      s=strValue;
+//      Serial.println(value);
     }
     
   }
 //Le sensor de alcool;
 //Le sensor de velocidade
-  /*if(sensorAlcool > ALCOOLMAX || flag_alc)
+  if(sensorAlcool > ALCOOLMAX || flag_alc)
     //individuo bebado, monta payload
     send_payload(OPCODE_BEBADO,0);
   
   else if (velocidade > VELMAX || flag_vel)
     //individuo em alta velocidade, monta payload
     send_payload(OPCODE_VEL, 1);
-*/
+
 
   
 }
